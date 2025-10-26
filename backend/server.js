@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['https://hospitalfron.netlify.app'], // replace with your actual frontend URL
+  origin: ['https://hospital-4tj4.vercel.app/'], // replace with your actual frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
