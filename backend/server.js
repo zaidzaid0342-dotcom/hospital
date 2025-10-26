@@ -11,10 +11,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['https://hospital-4tj4.vercel.app'], // replace with your actual frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ['https://hospital-4tj4.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
 }));
+
 app.use(express.json());
 
 // Routes
