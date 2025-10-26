@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a6f58" />
+    <meta name="description" content="Hospital Appointment Booking System" />
+    <title>MediCare - Hospital Appointment Booking</title>
+    <style>
+      /* Global styles for better visibility */
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f5f9f8; /* Light background for better contrast */
+        color: #04392c; /* Dark text for better readability */
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #0a6f58;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #075442;
+      }
+
+      /* Animation classes */
+      .fade-in {
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .slide-up {
+        animation: slideUp 0.3s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      /* Enhanced visibility for better contrast */
+      .bg-plato-green-50 {
+        background-color: #e6f7f2;
+      }
+      .bg-plato-green-100 {
+        background-color: #c3efe6;
+      }
+      .bg-plato-green-500 {
+        background-color: #0d8a6e;
+      }
+      .bg-plato-green-600 {
+        background-color: #0a6f58;
+      }
+      .bg-plato-green-700 {
+        background-color: #075442;
+      }
+      .bg-plato-green-800 {
+        background-color: #04392c;
+      }
+      .text-plato-green-600 {
+        color: #0a6f58;
+      }
+      .text-plato-green-700 {
+        color: #075442;
+      }
+      .text-plato-green-800 {
+        color: #04392c;
+      }
+      .border-plato-green-100 {
+        border-color: #c3efe6;
+      }
+      .border-plato-green-600 {
+        border-color: #0a6f58;
+      }
+      .border-plato-green-700 {
+        border-color: #075442;
+      }
+      .border-plato-green-800 {
+        border-color: #04392c;
+      }
+      
+      /* Darker background for better contrast */
+      .bg-dark-plato {
+        background-color: #04392c;
+      }
+      
+      /* Lighter text for dark backgrounds */
+      .text-on-dark {
+        color: #e6f7f2;
+      }
+      
+      /* Improved shadows for better depth */
+      .shadow-improved {
+        box-shadow: 0 10px 25px -5px rgba(13, 138, 110, 0.2), 0 10px 10px -5px rgba(13, 138, 110, 0.1);
+      }
+      
+      /* Enhanced transitions */
+      .transition-all-enhanced {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
