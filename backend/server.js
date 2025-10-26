@@ -23,9 +23,10 @@ app.use('/api/doctors', doctorRoutes);
 app.use('/api/bookings', bookingRoutes);
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+mongoose.connect(process.env.MONGODB_URI, {
+  autoIndex: true,
+})
+
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
