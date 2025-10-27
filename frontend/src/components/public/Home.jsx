@@ -44,7 +44,9 @@ import {
   FaBars,
   FaTimes,
   FaPlus,
-  FaMinus
+  FaMinus,
+  FaMoon,
+  FaSun
 } from 'react-icons/fa';
 import { doctorAPI, bookingAPI } from '../../services/api';
 import { format } from 'date-fns';
@@ -70,10 +72,20 @@ const Home = () => {
   const [showDoctorDialog, setShowDoctorDialog] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
   
   // Auto-slide intervals
   const featureIntervalRef = useRef(null);
   const serviceIntervalRef = useRef(null);
+
+  // Dark mode effect
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   // Helper function for consistent date formatting
   const formatDate = (dateString) => {
@@ -446,20 +458,20 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       {/* Navigation Bar */}
-      <nav className="bg-white text-slate-800 sticky top-0 z-50 shadow-md">
+      <nav className="bg-white dark:bg-gray-900 text-slate-800 dark:text-gray-200 sticky top-0 z-40 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
                 <div className="relative">
                   <div className="absolute -inset-1 bg-blue-400 rounded-full blur opacity-50"></div>
-                  <div className="relative bg-white rounded-full p-1">
-                    <FaHospital className="h-8 w-8 text-blue-500 mx-1" />
+                  <div className="relative bg-white dark:bg-gray-800 rounded-full p-1">
+                    <FaHospital className="h-8 w-8 text-blue-500 dark:text-blue-400 mx-1" />
                   </div>
                 </div>
-                <span className="text-xl font-bold ml-2 text-blue-600">KRS Hospital</span>
+                <span className="text-xl font-bold ml-2 text-blue-600 dark:text-blue-400">KRS Hospital</span>
               </div>
               <div className="hidden md:block md:ml-10">
                 <div className="flex space-x-1">
@@ -467,7 +479,7 @@ const Home = () => {
                     <a 
                       key={index}
                       href={`#${item}`} 
-                      className="text-gray-600 hover:text-blue-600 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 relative group"
+                      className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 dark:hover:bg-gray-800 relative group"
                     >
                       {item.charAt(0).toUpperCase() + item.slice(1)}
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
@@ -479,7 +491,7 @@ const Home = () => {
             <div className="hidden md:flex items-center space-x-4">
               <button 
                 onClick={openTrackingModal}
-                className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 flex items-center"
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 dark:hover:bg-gray-800 flex items-center"
               >
                 <FaSearch className="mr-2" />
                 Track Booking
@@ -490,11 +502,24 @@ const Home = () => {
               >
                 Book Appointment
               </Link>
+              {/* Dark Mode Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setDarkMode((d) => !d)}
+                className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {darkMode ? (
+                  <FaSun className="h-5 w-5 text-yellow-400" />
+                ) : (
+                  <FaMoon className="h-5 w-5 text-blue-500" />
+                )}
+              </button>
             </div>
             <div className="-mr-2 flex items-center md:hidden">
               <button
                 onClick={toggleMobileMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-colors"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 focus:outline-none transition-colors"
               >
                 {mobileMenuOpen ? <FaTimes className="h-6 w-6" /> : <FaBars className="h-6 w-6" />}
               </button>
@@ -504,25 +529,25 @@ const Home = () => {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white shadow-lg">
+          <div className="md:hidden bg-white dark:bg-gray-800 shadow-lg">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {['services', 'doctors', 'about', 'contact'].map((item, index) => (
                 <a 
                   key={index}
                   href={`#${item}`} 
-                  className="text-gray-600 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.charAt(0).toUpperCase() + item.slice(1)}
                 </a>
               ))}
-              <div className="pt-2 pb-3 border-t border-gray-200">
+              <div className="pt-2 pb-3 border-t border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => {
                     openTrackingModal();
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                  className="w-full flex items-center px-3 py-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800"
                 >
                   <FaSearch className="mr-2" />
                   Track Booking
@@ -534,6 +559,27 @@ const Home = () => {
                 >
                   Book Appointment
                 </Link>
+                {/* Dark Mode Toggle Button in Mobile Menu */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDarkMode((d) => !d);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center px-3 py-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 mt-2"
+                >
+                  {darkMode ? (
+                    <>
+                      <FaSun className="mr-2 text-yellow-400" />
+                      Light Mode
+                    </>
+                  ) : (
+                    <>
+                      <FaMoon className="mr-2 text-blue-500" />
+                      Dark Mode
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>
@@ -541,8 +587,8 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-blue-500 to-indigo-600 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-700/50"></div>
+      <div className="relative bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-gray-900 dark:to-black text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-700/50 dark:to-gray-900/50"></div>
         <div className="absolute top-0 left-0 w-full h-full">
           <div className="absolute top-10 left-10 w-96 h-96 bg-white rounded-full mix-blend-soft-light filter blur-3xl opacity-10"></div>
           <div className="bottom-10 right-10 w-96 h-96 bg-white rounded-full mix-blend-soft-light filter blur-3xl opacity-10"></div>
@@ -560,7 +606,7 @@ const Home = () => {
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               Welcome to <span className="text-white">KRS</span> Multi Speciality Hospital
             </h1>
-            <p className="text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl mb-10 text-blue-100 dark:text-gray-300 max-w-3xl mx-auto">
               Your Health, Our Priority - Providing World-Class Healthcare with Compassion and Excellence
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -589,14 +635,14 @@ const Home = () => {
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0">
-          <svg className="w-full h-16 text-blue-50 fill-current" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-full h-16 text-blue-50 dark:text-gray-800 fill-current" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
             <path d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,100L1392,100C1344,100,1248,100,1152,100C1056,100,960,100,864,100C768,100,672,100,576,100C480,100,384,100,288,100C192,100,96,100,48,100L0,100Z"></path>
           </svg>
         </div>
       </div>
 
       {/* Emergency Banner */}
-      <div className="bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-4 shadow-lg">
+      <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-700 dark:to-red-800 text-white py-3 px-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between">
           <div className="flex items-center mb-2 sm:mb-0">
             <div className="relative">
@@ -615,13 +661,13 @@ const Home = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="py-12 bg-white">
+      <div className="py-12 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100">
-                <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                <div className="text-gray-700">{stat.label}</div>
+              <div key={index} className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 dark:border-gray-700">
+                <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">{stat.number}</div>
+                <div className="text-gray-700 dark:text-gray-300">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -629,13 +675,13 @@ const Home = () => {
       </div>
 
       {/* Features Section with Advanced Carousel */}
-      <div id="about" className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div id="about" className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="text-blue-600">KRS</span> Multi Speciality Hospital?
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Why Choose <span className="text-blue-600 dark:text-blue-400">KRS</span> Multi Speciality Hospital?
             </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               We provide comprehensive healthcare services with a patient-first approach, ensuring you receive the best possible care
             </p>
           </div>
@@ -643,8 +689,8 @@ const Home = () => {
           {/* Advanced Features Carousel */}
           <div className="relative max-w-4xl mx-auto">
             <div className="overflow-hidden rounded-2xl shadow-xl">
-              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg overflow-hidden">
-                <div className="h-48 bg-gradient-to-br from-blue-600/30 to-indigo-600/30 flex items-center justify-center backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-gray-700 dark:to-gray-800 rounded-2xl shadow-lg overflow-hidden">
+                <div className="h-48 bg-gradient-to-br from-blue-600/30 to-indigo-600/30 dark:from-gray-600/30 dark:to-gray-700/30 flex items-center justify-center backdrop-blur-sm">
                   <div className="relative">
                     <div className="absolute -inset-4 bg-white rounded-full blur-2xl opacity-20"></div>
                     <div className="relative bg-white/20 backdrop-blur-sm rounded-full p-4 border border-white/30">
@@ -652,14 +698,14 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-                <div className="p-8 bg-gradient-to-b from-blue-500/90 to-indigo-600/90">
+                <div className="p-8 bg-gradient-to-b from-blue-500/90 to-indigo-600/90 dark:from-gray-700/90 dark:to-gray-800/90">
                   <h3 className="text-2xl font-bold text-white mb-2 text-center">
                     {features[currentFeatureIndex].title}
                   </h3>
-                  <p className="text-blue-100 text-center mb-4">
+                  <p className="text-blue-100 dark:text-gray-300 text-center mb-4">
                     {features[currentFeatureIndex].description}
                   </p>
-                  <p className="text-white text-center">
+                  <p className="text-white dark:text-gray-200 text-center">
                     {features[currentFeatureIndex].details}
                   </p>
                 </div>
@@ -706,13 +752,13 @@ const Home = () => {
       </div>
 
       {/* Services Section with Advanced Carousel */}
-      <div id="services" className="py-16 bg-white">
+      <div id="services" className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Our Services
             </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               We offer a comprehensive range of medical services to meet all your healthcare needs
             </p>
           </div>
@@ -720,8 +766,8 @@ const Home = () => {
           {/* Advanced Services Carousel */}
           <div className="relative max-w-4xl mx-auto">
             <div className="overflow-hidden rounded-2xl shadow-xl">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg overflow-hidden border border-blue-200">
-                <div className="h-40 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl shadow-lg overflow-hidden border border-blue-200 dark:border-gray-700">
+                <div className="h-40 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
                   <div className="relative">
                     <div className="absolute -inset-4 bg-blue-500 rounded-full blur-2xl opacity-10"></div>
                     <div className={`relative ${services[currentServiceIndex].color} rounded-full p-4`}>
@@ -730,10 +776,10 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">
                     {services[currentServiceIndex].title}
                   </h3>
-                  <p className="text-gray-700 text-center mb-6">
+                  <p className="text-gray-700 dark:text-gray-300 text-center mb-6">
                     {services[currentServiceIndex].description}
                   </p>
                   <div className="flex justify-center">
@@ -789,13 +835,13 @@ const Home = () => {
       </div>
 
       {/* Specializations Section */}
-      <div className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Our Specializations
             </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               Expert care across multiple medical disciplines with specialized doctors
             </p>
           </div>
@@ -810,8 +856,8 @@ const Home = () => {
               'Physician',
               'Emergency Care',
             ].map((spec, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl text-center hover:bg-blue-50 transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-md border border-blue-100 hover:border-blue-300">
-                <p className="text-gray-800 font-medium group-hover:text-blue-600 transition-colors">{spec}</p>
+              <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl text-center hover:bg-blue-50 dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-md border border-blue-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-gray-600">
+                <p className="text-gray-800 dark:text-gray-200 font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{spec}</p>
               </div>
             ))}
           </div>
@@ -819,13 +865,13 @@ const Home = () => {
       </div>
 
       {/* Doctors Section */}
-      <div id="doctors" className="py-16 bg-white">
+      <div id="doctors" className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Meet Our Expert Doctors
             </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               Our team of highly qualified medical professionals is dedicated to providing you with the best care
             </p>
           </div>
@@ -839,20 +885,20 @@ const Home = () => {
               {/* Desktop View - Grid Layout */}
               <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {doctors.map((doctor) => (
-                  <div key={doctor._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-blue-100 group">
-                    <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center relative overflow-hidden">
+                  <div key={doctor._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-blue-100 dark:border-gray-700 group">
+                    <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="relative">
                         <div className="absolute -inset-4 bg-blue-500 rounded-full blur-2xl opacity-10"></div>
-                        <div className="relative bg-white rounded-full p-3 border border-blue-200">
-                          <FaUserMd className="h-16 w-16 text-blue-500" />
+                        <div className="relative bg-white dark:bg-gray-800 rounded-full p-3 border border-blue-200 dark:border-gray-700">
+                          <FaUserMd className="h-16 w-16 text-blue-500 dark:text-blue-400" />
                         </div>
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">Dr. {doctor.name}</h3>
-                      <p className="text-blue-600 mb-2">{doctor.specialization}</p>
-                      <p className="text-gray-600 text-sm mb-4">Experience: {doctor.experience || '15+ years'}</p>
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Dr. {doctor.name}</h3>
+                      <p className="text-blue-600 dark:text-blue-400 mb-2">{doctor.specialization}</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Experience: {doctor.experience || '15+ years'}</p>
                       <div className="flex flex-col gap-2">
                         <button
                           onClick={() => openDoctorDialog(doctor)}
@@ -863,7 +909,7 @@ const Home = () => {
                         </button>
                         <Link
                           to="/book-appointment"
-                          className="inline-flex items-center justify-center px-4 py-2 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-300"
+                          className="inline-flex items-center justify-center px-4 py-2 border border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-all duration-300"
                         >
                           Book Appointment
                         </Link>
@@ -877,20 +923,20 @@ const Home = () => {
               <div className="md:hidden">
                 <div className="relative max-w-md mx-auto">
                   <div className="overflow-hidden rounded-2xl shadow-xl">
-                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-blue-200">
-                      <div className="h-64 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center relative overflow-hidden">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-blue-200 dark:border-gray-700">
+                      <div className="h-64 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10"></div>
                         <div className="relative">
                           <div className="absolute -inset-4 bg-blue-500 rounded-full blur-2xl opacity-10"></div>
-                          <div className="relative bg-white rounded-full p-3 border border-blue-200">
-                            <FaUserMd className="h-20 w-20 text-blue-500" />
+                          <div className="relative bg-white dark:bg-gray-800 rounded-full p-3 border border-blue-200 dark:border-gray-700">
+                            <FaUserMd className="h-20 w-20 text-blue-500 dark:text-blue-400" />
                           </div>
                         </div>
                       </div>
                       <div className="p-6">
-                        <h3 className="text-xl font-semibold text-gray-900 mb-1">Dr. {doctors[currentDoctorIndex]?.name}</h3>
-                        <p className="text-blue-600 mb-2">{doctors[currentDoctorIndex]?.specialization}</p>
-                        <p className="text-gray-600 text-sm mb-4">Experience: {doctors[currentDoctorIndex]?.experience || '15+ years'}</p>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Dr. {doctors[currentDoctorIndex]?.name}</h3>
+                        <p className="text-blue-600 dark:text-blue-400 mb-2">{doctors[currentDoctorIndex]?.specialization}</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Experience: {doctors[currentDoctorIndex]?.experience || '15+ years'}</p>
                         <div className="flex flex-col gap-2">
                           <button
                             onClick={() => openDoctorDialog(doctors[currentDoctorIndex])}
@@ -901,7 +947,7 @@ const Home = () => {
                           </button>
                           <Link
                             to="/book-appointment"
-                            className="inline-flex items-center justify-center px-4 py-2 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-300"
+                            className="inline-flex items-center justify-center px-4 py-2 border border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-all duration-300"
                           >
                             Book Appointment
                           </Link>
@@ -955,25 +1001,25 @@ const Home = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               Find answers to common questions about our services and appointments
             </p>
           </div>
           <div className="max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
-              <div key={index} className="mb-4 bg-white rounded-xl shadow-sm overflow-hidden border border-blue-100 transition-all duration-300">
+              <div key={index} className="mb-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-blue-100 dark:border-gray-700 transition-all duration-300">
                 <button
-                  className="flex justify-between items-center w-full p-6 text-left hover:bg-blue-50 transition-colors duration-300"
+                  className="flex justify-between items-center w-full p-6 text-left hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-300"
                   onClick={() => toggleFaq(index)}
                 >
-                  <h3 className="font-semibold text-gray-900">{faq.question}</h3>
-                  <span className="text-blue-600 transition-transform duration-300">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{faq.question}</h3>
+                  <span className="text-blue-600 dark:text-blue-400 transition-transform duration-300">
                     {activeFaq === index ? <FaMinus /> : <FaPlus />}
                   </span>
                 </button>
@@ -983,7 +1029,7 @@ const Home = () => {
                   }`}
                 >
                   <div className="px-6 pb-6">
-                    <p className="text-gray-700">{faq.answer}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{faq.answer}</p>
                   </div>
                 </div>
               </div>
@@ -993,13 +1039,13 @@ const Home = () => {
       </div>
 
       {/* Newsletter Section */}
-      <div className="py-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+      <div className="py-16 bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-gray-800 dark:to-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Stay Updated With Health Tips
             </h2>
-            <p className="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
+            <p className="text-xl mb-8 text-blue-100 dark:text-gray-300 max-w-2xl mx-auto">
               Subscribe to our newsletter for health tips, medical news, and exclusive offers
             </p>
             <form onSubmit={handleSubscribe} className="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
@@ -1019,7 +1065,7 @@ const Home = () => {
               </button>
             </form>
             {subscribed && (
-              <div className="mt-4 flex items-center justify-center text-blue-200">
+              <div className="mt-4 flex items-center justify-center text-blue-200 dark:text-gray-300">
                 <FaCheckCircle className="mr-2" />
                 <span>Thank you for subscribing!</span>
               </div>
@@ -1029,67 +1075,67 @@ const Home = () => {
       </div>
 
       {/* Contact Section */}
-      <div id="contact" className="py-16 bg-white">
+      <div id="contact" className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Get In Touch
             </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               Have questions or need to schedule an appointment? We're here to help
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 group">
+            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 dark:border-gray-700 group">
               <div className="flex justify-center mb-4">
                 <div className="relative">
                   <div className="absolute -inset-2 bg-blue-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                  <div className="relative bg-blue-100 rounded-full p-3">
-                    <FaPhoneAlt className="h-6 w-6 text-blue-600" />
+                  <div className="relative bg-blue-100 dark:bg-gray-700 rounded-full p-3">
+                    <FaPhoneAlt className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Phone</h3>
-              <p className="text-gray-700">+1 (555) 123-4567</p>
-              <p className="text-gray-700">+1 (555) 765-4321</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Phone</h3>
+              <p className="text-gray-700 dark:text-gray-300">+1 (555) 123-4567</p>
+              <p className="text-gray-700 dark:text-gray-300">+1 (555) 765-4321</p>
             </div>
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 group">
+            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 dark:border-gray-700 group">
               <div className="flex justify-center mb-4">
                 <div className="relative">
                   <div className="absolute -inset-2 bg-blue-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                  <div className="relative bg-blue-100 rounded-full p-3">
-                    <FaEnvelope className="h-6 w-6 text-blue-600" />
+                  <div className="relative bg-blue-100 dark:bg-gray-700 rounded-full p-3">
+                    <FaEnvelope className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
-              <p className="text-gray-700">info@krshospital.com</p>
-              <p className="text-gray-700">support@krshospital.com</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Email</h3>
+              <p className="text-gray-700 dark:text-gray-300">info@krshospital.com</p>
+              <p className="text-gray-700 dark:text-gray-300">support@krshospital.com</p>
             </div>
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 group">
+            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 dark:border-gray-700 group">
               <div className="flex justify-center mb-4">
                 <div className="relative">
                   <div className="absolute -inset-2 bg-blue-500 rounded-full blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                  <div className="relative bg-blue-100 rounded-full p-3">
-                    <FaMapMarkerAlt className="h-6 w-6 text-blue-600" />
+                  <div className="relative bg-blue-100 dark:bg-gray-700 rounded-full p-3">
+                    <FaMapMarkerAlt className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Address</h3>
-              <p className="text-gray-700">123 Health Street</p>
-              <p className="text-gray-700">Medical City, MC 12345</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Address</h3>
+              <p className="text-gray-700 dark:text-gray-300">123 Health Street</p>
+              <p className="text-gray-700 dark:text-gray-300">Medical City, MC 12345</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 py-16">
+      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-gray-800 dark:to-gray-900 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Need Medical Attention?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-blue-100 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Book your appointment today and get the care you deserve from our expert medical team at KRS Multi Speciality Hospital
           </p>
           <Link
@@ -1103,7 +1149,7 @@ const Home = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-blue-950 to-indigo-900 text-white py-12">
+      <footer className="bg-gradient-to-r from-blue-800 to-indigo-900 dark:from-gray-900 dark:to-black text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -1116,7 +1162,7 @@ const Home = () => {
                 </div>
                 <span className="text-xl font-bold ml-2 text-white">KRS Hospital</span>
               </div>
-              <p className="text-blue-100 mb-4">
+              <p className="text-blue-200 dark:text-gray-300 mb-4">
                 Providing world-class healthcare with compassion and excellence for over 15 years.
               </p>
               <div className="flex space-x-4">
@@ -1129,7 +1175,7 @@ const Home = () => {
                   <a 
                     key={index} 
                     href="#" 
-                    className={`text-blue-200 ${social.color} transition-colors duration-300`}
+                    className={`text-blue-200 dark:text-gray-300 ${social.color} transition-colors duration-300`}
                   >
                     {social.icon}
                   </a>
@@ -1143,7 +1189,7 @@ const Home = () => {
                   <li key={index}>
                     <a 
                       href="#" 
-                      className="text-blue-200 hover:text-white transition-colors duration-300"
+                      className="text-blue-200 dark:text-gray-300 hover:text-white transition-colors duration-300"
                     >
                       {item}
                     </a>
@@ -1158,7 +1204,7 @@ const Home = () => {
                   <li key={index}>
                     <a 
                       href="#" 
-                      className="text-blue-200 hover:text-white transition-colors duration-300"
+                      className="text-blue-200 dark:text-gray-300 hover:text-white transition-colors duration-300"
                     >
                       {item}
                     </a>
@@ -1168,26 +1214,26 @@ const Home = () => {
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
-              <ul className="space-y-3 text-blue-200">
+              <ul className="space-y-3 text-blue-200 dark:text-gray-300">
                 <li className="flex items-start">
-                  <FaPhoneAlt className="mr-3 mt-1 text-blue-300 flex-shrink-0" />
+                  <FaPhoneAlt className="mr-3 mt-1 text-blue-300 dark:text-gray-400 flex-shrink-0" />
                   <span>+1 (555) 123-4567</span>
                 </li>
                 <li className="flex items-start">
-                  <FaEnvelope className="mr-3 mt-1 text-blue-300 flex-shrink-0" />
+                  <FaEnvelope className="mr-3 mt-1 text-blue-300 dark:text-gray-400 flex-shrink-0" />
                   <span>info@krshospital.com</span>
                 </li>
                 <li className="flex items-start">
-                  <FaMapMarkerAlt className="mr-3 mt-1 text-blue-300 flex-shrink-0" />
+                  <FaMapMarkerAlt className="mr-3 mt-1 text-blue-300 dark:text-gray-400 flex-shrink-0" />
                   <span>123 Health Street, Medical City</span>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-blue-500 mt-8 pt-8 text-center text-blue-200">
+          <div className="border-t border-blue-700 dark:border-gray-800 mt-8 pt-8 text-center text-blue-200 dark:text-gray-300">
             <p>&copy; {new Date().getFullYear()} KRS Multi Speciality Hospital. All rights reserved.</p>
             <div className="mt-2 flex items-center justify-center">
-              <FaUser className="mr-2 text-blue-300" />
+              <FaUser className="mr-2 text-blue-300 dark:text-gray-400" />
               <span>Developed by Mohammed Zaid</span>
             </div>
           </div>
@@ -1201,29 +1247,29 @@ const Home = () => {
           onClick={closeTrackingModal}
         >
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 animate-scaleIn"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 animate-scaleIn"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-t-2xl"></div>
             
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Track Your Booking</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Track Your Booking</h3>
                 <button
                   onClick={closeTrackingModal}
-                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300"
+                  className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white transition-colors duration-300"
                 >
                   <FaTimesCircle className="h-6 w-6" />
                 </button>
               </div>
               
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <div className="mb-6 p-4 bg-blue-50 dark:bg-gray-700 rounded-lg border border-blue-100 dark:border-gray-600">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <FaInfoCircle className="h-5 w-5 text-blue-600" />
+                    <FaInfoCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm text-blue-700">
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
                       Track your appointment status using either your phone number or tracking ID
                     </p>
                   </div>
@@ -1232,14 +1278,14 @@ const Home = () => {
               
               {/* Tracking Method Selection */}
               <div className="mb-6">
-                <div className="flex space-x-2 bg-blue-50 p-1 rounded-lg">
+                <div className="flex space-x-2 bg-blue-50 dark:bg-gray-700 p-1 rounded-lg">
                   <button
                     type="button"
                     onClick={() => setTrackingMethod('phone')}
                     className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-300 ${
                       trackingMethod === 'phone'
-                        ? 'bg-white shadow text-blue-600'
-                        : 'text-gray-600 hover:text-gray-800'
+                        ? 'bg-white dark:bg-gray-600 shadow text-blue-600 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                     }`}
                   >
                     <div className="flex items-center justify-center">
@@ -1252,8 +1298,8 @@ const Home = () => {
                     onClick={() => setTrackingMethod('id')}
                     className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-300 ${
                       trackingMethod === 'id'
-                        ? 'bg-white shadow text-blue-600'
-                        : 'text-gray-600 hover:text-gray-800'
+                        ? 'bg-white dark:bg-gray-600 shadow text-blue-600 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
                     }`}
                   >
                     <div className="flex items-center justify-center">
@@ -1267,7 +1313,7 @@ const Home = () => {
               <form onSubmit={handleTrackBooking} className="space-y-6">
                 {trackingMethod === 'phone' ? (
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Phone Number
                     </label>
                     <div className="relative rounded-lg shadow-sm">
@@ -1280,7 +1326,7 @@ const Home = () => {
                         type="tel"
                         value={trackingData.phone}
                         onChange={handleTrackingInputChange}
-                        className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3 border-gray-300 rounded-lg transition-all duration-300"
+                        className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3 border-gray-300 dark:border-gray-600 rounded-lg transition-all duration-300 text-gray-900 dark:text-white bg-white dark:bg-gray-700"
                         placeholder="+1 (555) 123-4567"
                         required
                       />
@@ -1288,7 +1334,7 @@ const Home = () => {
                   </div>
                 ) : (
                   <div>
-                    <label htmlFor="trackingId" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="trackingId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Tracking ID
                     </label>
                     <div className="relative rounded-lg shadow-sm">
@@ -1301,7 +1347,7 @@ const Home = () => {
                         type="text"
                         value={trackingData.trackingId}
                         onChange={handleTrackingInputChange}
-                        className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3 border-gray-300 rounded-lg transition-all duration-300"
+                        className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3 border-gray-300 dark:border-gray-600 rounded-lg transition-all duration-300 text-gray-900 dark:text-white bg-white dark:bg-gray-700"
                         placeholder="1234"
                         required
                       />
@@ -1331,13 +1377,13 @@ const Home = () => {
               </form>
 
               {trackingError && (
-                <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-100">
+                <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/50 rounded-lg border border-red-100 dark:border-red-700">
                   <div className="flex">
                     <div className="flex-shrink-0">
                       <FaTimesCircle className="h-5 w-5 text-red-400" />
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-red-800">
+                      <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
                         {trackingError}
                       </h3>
                     </div>
@@ -1346,23 +1392,23 @@ const Home = () => {
               )}
 
               {bookingDetails && (
-                <div className="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-sm">
+                <div className="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 border border-blue-200 dark:border-gray-700 shadow-sm">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-gray-900">Booking Details</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Booking Details</h3>
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-500">ID:</span>
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">ID:</span>
                       <div className="flex items-center">
-                        <span className="font-mono font-bold text-gray-900">{bookingDetails.trackingId}</span>
+                        <span className="font-mono font-bold text-gray-900 dark:text-white">{bookingDetails.trackingId}</span>
                         <button 
                           onClick={() => copyToClipboard(bookingDetails.trackingId)}
-                          className="ml-2 p-1.5 rounded-md bg-blue-100 text-gray-600 hover:bg-blue-200 transition-colors duration-300"
+                          className="ml-2 p-1.5 rounded-md bg-blue-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-gray-600 transition-colors duration-300"
                           title="Copy to clipboard"
                         >
                           <FaCopy className="h-4 w-4" />
                         </button>
                       </div>
                       {copied && (
-                        <span className="text-xs text-green-600 font-medium">Copied!</span>
+                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">Copied!</span>
                       )}
                     </div>
                   </div>
@@ -1370,25 +1416,25 @@ const Home = () => {
                   <div className="space-y-5">
                     <div className="flex items-start">
                       <div className="flex-shrink-0 mt-1">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-600">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400">
                           <FaUser className="h-5 w-5" />
                         </div>
                       </div>
                       <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Patient</h4>
-                        <p className="text-lg font-medium text-gray-900">{bookingDetails.patientName}</p>
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Patient</h4>
+                        <p className="text-lg font-medium text-gray-900 dark:text-white">{bookingDetails.patientName}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-start">
                       <div className="flex-shrink-0 mt-1">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-600">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400">
                           <FaUserMd className="h-5 w-5" />
                         </div>
                       </div>
                       <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Doctor</h4>
-                        <p className="text-lg font-medium text-gray-900">
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Doctor</h4>
+                        <p className="text-lg font-medium text-gray-900 dark:text-white">
                           Dr. {bookingDetails.doctor.name} ({bookingDetails.doctor.specialization})
                         </p>
                       </div>
@@ -1396,17 +1442,17 @@ const Home = () => {
                     
                     <div className="flex items-start">
                       <div className="flex-shrink-0 mt-1">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-600">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400">
                           <FaCalendarAlt className="h-5 w-5" />
                         </div>
                       </div>
                       <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Appointment Date & Time</h4>
-                        <p className="text-lg font-medium text-gray-900">
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Appointment Date & Time</h4>
+                        <p className="text-lg font-medium text-gray-900 dark:text-white">
                           {formatDateTime(bookingDetails.appointmentDate, bookingDetails.appointmentTime)}
                         </p>
                         {bookingDetails.status === 'pending' && (!bookingDetails.appointmentTime || bookingDetails.appointmentTime === 'Pending') && (
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                             Exact time will be assigned by hospital staff
                           </p>
                         )}
@@ -1415,12 +1461,12 @@ const Home = () => {
                     
                     <div className="flex items-start">
                       <div className="flex-shrink-0 mt-1">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-600">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400">
                           {getStatusIcon(bookingDetails.status)}
                         </div>
                       </div>
                       <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Status</h4>
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</h4>
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(bookingDetails.status)}`}>
                           {getStatusIcon(bookingDetails.status)}
                           <span className="ml-2">{getStatusText(bookingDetails.status)}</span>
@@ -1431,31 +1477,31 @@ const Home = () => {
                     {bookingDetails.notes && (
                       <div className="flex items-start">
                         <div className="flex-shrink-0 mt-1">
-                          <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-600">
+                          <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400">
                             <FaNotesMedical className="h-5 w-5" />
                           </div>
                         </div>
                         <div className="ml-4">
-                          <h4 className="text-sm font-medium text-gray-500">Notes</h4>
-                          <p className="text-gray-900">{bookingDetails.notes}</p>
+                          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Notes</h4>
+                          <p className="text-gray-900 dark:text-white">{bookingDetails.notes}</p>
                         </div>
                       </div>
                     )}
                   </div>
                   
                   {bookingDetails.statusHistory && bookingDetails.statusHistory.length > 0 && (
-                    <div className="mt-6 pt-6 border-t border-blue-200">
-                      <h4 className="text-md font-medium text-gray-900 mb-3">Status History</h4>
+                    <div className="mt-6 pt-6 border-t border-blue-200 dark:border-gray-700">
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-3">Status History</h4>
                       <div className="space-y-3">
                         {bookingDetails.statusHistory.map((history, index) => (
-                          <div key={index} className="flex items-center justify-between text-sm bg-blue-50 p-3 rounded-lg">
+                          <div key={index} className="flex items-center justify-between text-sm bg-blue-50 dark:bg-gray-700 p-3 rounded-lg">
                             <div className="flex items-center">
                               <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(history.status)}`}>
                                 {getStatusIcon(history.status)}
                                 <span className="ml-1">{history.status.charAt(0).toUpperCase() + history.status.slice(1)}</span>
                               </span>
                             </div>
-                            <span className="text-gray-500">
+                            <span className="text-gray-500 dark:text-gray-400">
                               {formatDate(history.timestamp)}
                             </span>
                           </div>
@@ -1477,17 +1523,17 @@ const Home = () => {
           onClick={closeServiceDialog}
         >
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 animate-scaleIn"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 animate-scaleIn"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-t-2xl"></div>
             
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">{selectedService.title}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedService.title}</h3>
                 <button
                   onClick={closeServiceDialog}
-                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300"
+                  className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white transition-colors duration-300"
                 >
                   <FaTimesCircle className="h-6 w-6" />
                 </button>
@@ -1502,15 +1548,15 @@ const Home = () => {
                 </div>
               </div>
               
-              <p className="text-gray-700 mb-6">{selectedService.details}</p>
+              <p className="text-gray-700 dark:text-gray-300 mb-6">{selectedService.details}</p>
               
               <div className="mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Key Features</h4>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Key Features</h4>
                 <ul className="space-y-2">
                   {selectedService.highlights.map((highlight, index) => (
                     <li key={index} className="flex items-start">
                       <FaCheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                      <span className="text-gray-700">{highlight}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{highlight}</span>
                     </li>
                   ))}
                 </ul>
@@ -1526,7 +1572,7 @@ const Home = () => {
                 </Link>
                 <button
                   onClick={closeServiceDialog}
-                  className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-all duration-300"
+                  className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300"
                 >
                   Close
                 </button>
@@ -1543,17 +1589,17 @@ const Home = () => {
           onClick={closeDoctorDialog}
         >
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 animate-scaleIn"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 animate-scaleIn"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-t-2xl"></div>
             
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Dr. {selectedDoctor.name}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Dr. {selectedDoctor.name}</h3>
                 <button
                   onClick={closeDoctorDialog}
-                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300"
+                  className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white transition-colors duration-300"
                 >
                   <FaTimesCircle className="h-6 w-6" />
                 </button>
@@ -1561,12 +1607,12 @@ const Home = () => {
               
               <div className="flex flex-col md:flex-row gap-6 mb-6">
                 <div className="flex-shrink-0">
-                  <div className="h-40 w-40 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full flex items-center justify-center relative overflow-hidden">
+                  <div className="h-40 w-40 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10"></div>
                     <div className="relative">
                       <div className="absolute -inset-4 bg-blue-500 rounded-full blur-2xl opacity-10"></div>
-                      <div className="relative bg-white rounded-full p-3 border border-blue-200">
-                        <FaUserMd className="h-16 w-16 text-blue-500" />
+                      <div className="relative bg-white dark:bg-gray-800 rounded-full p-3 border border-blue-200 dark:border-gray-700">
+                        <FaUserMd className="h-16 w-16 text-blue-500 dark:text-blue-400" />
                       </div>
                     </div>
                   </div>
@@ -1574,25 +1620,25 @@ const Home = () => {
                 
                 <div className="flex-1">
                   <div className="mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-1">Specialization</h4>
-                    <p className="text-blue-600">{selectedDoctor.specialization}</p>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Specialization</h4>
+                    <p className="text-blue-600 dark:text-blue-400">{selectedDoctor.specialization}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-1">Experience</h4>
-                    <p className="text-gray-700">{selectedDoctor.experience || '15+ years'}</p>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Experience</h4>
+                    <p className="text-gray-700 dark:text-gray-300">{selectedDoctor.experience || '15+ years'}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-1">Education</h4>
-                    <p className="text-gray-700">{selectedDoctor.education || 'MD from University of Medical Sciences'}</p>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Education</h4>
+                    <p className="text-gray-700 dark:text-gray-300">{selectedDoctor.education || 'MD from University of Medical Sciences'}</p>
                   </div>
                 </div>
               </div>
               
               <div className="mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">About</h4>
-                <p className="text-gray-700">
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">About</h4>
+                <p className="text-gray-700 dark:text-gray-300">
                   {selectedDoctor.bio || `Dr. ${selectedDoctor.name} is a highly skilled and compassionate physician specializing in ${selectedDoctor.specialization}. With a patient-centered approach, Dr. ${selectedDoctor.name} is committed to providing the highest quality care using the latest medical advancements and evidence-based practices.`}
                 </p>
               </div>
@@ -1607,7 +1653,7 @@ const Home = () => {
                 </Link>
                 <button
                   onClick={closeDoctorDialog}
-                  className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-all duration-300"
+                  className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300"
                 >
                   Close
                 </button>
@@ -1668,6 +1714,9 @@ const Home = () => {
         .bg-blue-700 {
           background-color: #1d4ed8;
         }
+        .bg-blue-800 {
+          background-color: #1e40af;
+        }
         .bg-indigo-50 {
           background-color: #eef2ff;
         }
@@ -1683,6 +1732,12 @@ const Home = () => {
         .bg-indigo-700 {
           background-color: #4338ca;
         }
+        .bg-indigo-800 {
+          background-color: #3730a3;
+        }
+        .bg-indigo-900 {
+          background-color: #312e81;
+        }
         .text-blue-500 {
           color: #3b82f6;
         }
@@ -1692,6 +1747,9 @@ const Home = () => {
         .text-blue-700 {
           color: #1d4ed8;
         }
+        .text-blue-800 {
+          color: #1e40af;
+        }
         .text-indigo-500 {
           color: #6366f1;
         }
@@ -1700,6 +1758,12 @@ const Home = () => {
         }
         .text-indigo-700 {
           color: #4338ca;
+        }
+        .text-indigo-800 {
+          color: #3730a3;
+        }
+        .text-indigo-900 {
+          color: #312e81;
         }
         .border-blue-100 {
           border-color: #dbeafe;
@@ -1716,6 +1780,9 @@ const Home = () => {
         .border-blue-700 {
           border-color: #1d4ed8;
         }
+        .border-blue-800 {
+          border-color: #1e40af;
+        }
         .border-indigo-100 {
           border-color: #e0e7ff;
         }
@@ -1730,6 +1797,53 @@ const Home = () => {
         }
         .border-indigo-700 {
           border-color: #4338ca;
+        }
+        .border-indigo-800 {
+          border-color: #3730a3;
+        }
+        .border-indigo-900 {
+          border-color: #312e81;
+        }
+        
+        /* Dark mode styles */
+        .dark .bg-gray-800 {
+          background-color: #1f2937;
+        }
+        .dark .bg-gray-700 {
+          background-color: #374151;
+        }
+        .dark .bg-gray-600 {
+          background-color: #4b5563;
+        }
+        .dark .text-gray-900 {
+          color: #f9fafb;
+        }
+        .dark .text-gray-800 {
+          color: #f3f4f6;
+        }
+        .dark .text-gray-700 {
+          color: #e5e7eb;
+        }
+        .dark .text-gray-600 {
+          color: #d1d5db;
+        }
+        .dark .text-gray-500 {
+          color: #9ca3af;
+        }
+        .dark .text-gray-400 {
+          color: #6b7280;
+        }
+        .dark .text-gray-300 {
+          color: #4b5563;
+        }
+        .dark .text-gray-200 {
+          color: #374151;
+        }
+        .dark .border-gray-700 {
+          border-color: #374151;
+        }
+        .dark .border-gray-600 {
+          border-color: #4b5563;
         }
         
         /* Hover effects */
@@ -1756,6 +1870,12 @@ const Home = () => {
         }
         .hover\:bg-indigo-700:hover {
           background-color: #4338ca;
+        }
+        .hover\:bg-gray-700:hover {
+          background-color: #374151;
+        }
+        .hover\:bg-gray-600:hover {
+          background-color: #4b5563;
         }
         .hover\:text-blue-300:hover {
           color: #93c5fd;
@@ -1811,6 +1931,9 @@ const Home = () => {
         .hover\:border-indigo-700:hover {
           border-color: #4338ca;
         }
+        .hover\:border-gray-600:hover {
+          border-color: #4b5563;
+        }
         
         /* Focus effects */
         .focus\:ring-blue-500:focus {
@@ -1840,6 +1963,10 @@ const Home = () => {
           --tw-gradient-from: #1d4ed8;
           --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(29, 78, 216, 0));
         }
+        .from-blue-800 {
+          --tw-gradient-from: #1e40af;
+          --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(30, 64, 175, 0));
+        }
         .from-indigo-400 {
           --tw-gradient-from: #818cf8;
           --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(129, 140, 248, 0));
@@ -1856,6 +1983,14 @@ const Home = () => {
           --tw-gradient-from: #4338ca;
           --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(67, 56, 202, 0));
         }
+        .from-indigo-800 {
+          --tw-gradient-from: #3730a3;
+          --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(55, 48, 163, 0));
+        }
+        .from-indigo-900 {
+          --tw-gradient-from: #312e81;
+          --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(49, 46, 129, 0));
+        }
         .to-blue-300 {
           --tw-gradient-to: #93c5fd;
         }
@@ -1871,6 +2006,9 @@ const Home = () => {
         .to-blue-700 {
           --tw-gradient-to: #1d4ed8;
         }
+        .to-blue-800 {
+          --tw-gradient-to: #1e40af;
+        }
         .to-indigo-300 {
           --tw-gradient-to: #a5b4fc;
         }
@@ -1885,6 +2023,12 @@ const Home = () => {
         }
         .to-indigo-700 {
           --tw-gradient-to: #4338ca;
+        }
+        .to-indigo-800 {
+          --tw-gradient-to: #3730a3;
+        }
+        .to-indigo-900 {
+          --tw-gradient-to: #312e81;
         }
         .bg-clip-text {
           -webkit-background-clip: text;
@@ -1919,7 +2063,7 @@ const Home = () => {
         
         /* Improved card styles */
         .card {
-          @apply bg-white rounded-xl shadow-lg overflow-hidden border border-blue-100 transition-all duration-300;
+          @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-blue-100 dark:border-gray-700 transition-all duration-300;
         }
         
         /* Improved modal styles */
@@ -1929,7 +2073,7 @@ const Home = () => {
         
         /* Improved form styles */
         .form-input {
-          @apply focus:ring-blue-500 focus:border-blue-500 block w-full p-3 border-gray-300 rounded-lg transition-all duration-300;
+          @apply focus:ring-blue-500 focus:border-blue-500 block w-full p-3 border-gray-300 dark:border-gray-600 rounded-lg transition-all duration-300 text-gray-900 dark:text-white bg-white dark:bg-gray-700;
         }
       `}</style>
     </div>
