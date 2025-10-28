@@ -64,7 +64,7 @@ const BookingForm = () => {
     setSubmitting(true);
 
     try {
-      const appointmentDate = new Date(formData.appointmentDate);
+      const appointmentDate = new Date(formData.appointmentDate + "T00:00:00");
       const formattedData = {
         ...formData,
         appointmentDate: appointmentDate.toISOString()
@@ -108,14 +108,20 @@ const BookingForm = () => {
 
   const today = format(new Date(), "yyyy-MM-dd");
 
+  // FIXED: Always parse as local date
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return '';
     try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
+      let date = dateString;
+      // Add T00:00:00 for local time parsing if needed
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        date = dateString + "T00:00:00";
+      }
+      const d = new Date(date);
+      if (isNaN(d.getTime())) {
         return 'Invalid date';
       }
-      return format(date, 'MMMM dd, yyyy');
+      return format(d, 'MMMM dd, yyyy');
     } catch (error) {
       console.error('Error formatting date:', error);
       return 'Invalid date';
@@ -160,7 +166,6 @@ const BookingForm = () => {
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-gray-700">
           <div className="p-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-
           <div className="p-8">
             {notification && (
               <div className={`mb-8 p-4 rounded-lg flex items-center justify-between backdrop-blur-sm ${
