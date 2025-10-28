@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { doctorAPI, bookingAPI } from '../../services/api';
 import { 
   FaUserMd, FaCalendarAlt, FaClock, FaCheckCircle, FaUser, FaEnvelope, FaPhone,
   FaStethoscope, FaNotesMedical, FaTimes, FaCheck, FaCopy, FaPrint,
   FaCalendarCheck, FaIdCard, FaHospital, FaMapMarkerAlt, FaHourglassHalf,
-  FaMoon, FaSun
+  FaMoon, FaSun, FaSearch, FaChevronDown, FaGraduationCap
 } from 'react-icons/fa';
 import { format } from 'date-fns';
 
@@ -24,6 +24,12 @@ const BookingForm = () => {
     notes: '',
   });
   const [darkMode, setDarkMode] = useState(false);
+  
+  // Doctor dropdown states
+  const [isDoctorDropdownOpen, setIsDoctorDropdownOpen] = useState(false);
+  const [doctorSearchTerm, setDoctorSearchTerm] = useState('');
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const dropdownRef = useRef(null);
 
   // Dark mode effect
   useEffect(() => {
@@ -33,6 +39,19 @@ const BookingForm = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDoctorDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     fetchDoctors();
@@ -59,6 +78,15 @@ const BookingForm = () => {
     });
   };
 
+  const handleDoctorSelect = (doctor) => {
+    setSelectedDoctor(doctor);
+    setFormData({
+      ...formData,
+      doctorId: doctor._id,
+    });
+    setIsDoctorDropdownOpen(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -83,6 +111,7 @@ const BookingForm = () => {
         appointmentDate: '',
         notes: '',
       });
+      setSelectedDoctor(null);
     } catch (error) {
       console.error('Booking error:', error);
       const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Failed to book appointment';
@@ -127,6 +156,16 @@ const BookingForm = () => {
       return 'Invalid date';
     }
   };
+
+  // Filter doctors based on search term
+  const filteredDoctors = doctors.filter(doctor => {
+    if (!doctorSearchTerm) return true;
+    const searchLower = doctorSearchTerm.toLowerCase();
+    return (
+      doctor.name.toLowerCase().includes(searchLower) ||
+      doctor.specialization.toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8`}>
@@ -252,31 +291,84 @@ const BookingForm = () => {
                     placeholder="+1 234 567 8900"
                   />
                 </div>
-                {/* Doctor */}
-                <div className="space-y-2">
+                {/* Doctor Dropdown */}
+                <div className="space-y-2" ref={dropdownRef}>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
                     <div className="flex items-center justify-center h-5 w-5 rounded-md bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 mr-2">
                       <FaStethoscope className="h-3 w-3" />
                     </div>
                     Select Doctor *
                   </label>
+                  
                   {loading ? (
                     <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-12 rounded-lg"></div>
                   ) : (
-                    <select
-                      name="doctorId"
-                      required
-                      value={formData.doctorId}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800"
-                    >
-                      <option value="">Choose a doctor</option>
-                      {doctors.map((doctor) => (
-                        <option key={doctor._id} value={doctor._id}>
-                          Dr. {doctor.name} - {doctor.specialization}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative">
+                      <div 
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 flex items-center justify-between cursor-pointer"
+                        onClick={() => setIsDoctorDropdownOpen(!isDoctorDropdownOpen)}
+                      >
+                        {selectedDoctor ? (
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                              <FaUserMd className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                            </div>
+                            <div className="ml-3">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">Dr. {selectedDoctor.name}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{selectedDoctor.specialization}</div>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-gray-500 dark:text-gray-400">Choose a doctor</span>
+                        )}
+                        <FaChevronDown className={`text-gray-400 transition-transform ${isDoctorDropdownOpen ? 'rotate-180' : ''}`} />
+                      </div>
+                      
+                      {isDoctorDropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 max-h-60 overflow-hidden">
+                          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <FaSearch className="text-gray-400" />
+                              </div>
+                              <input
+                                type="text"
+                                placeholder="Search doctors..."
+                                value={doctorSearchTerm}
+                                onChange={(e) => setDoctorSearchTerm(e.target.value)}
+                                className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white bg-white dark:bg-gray-800"
+                              />
+                            </div>
+                          </div>
+                          <div className="overflow-y-auto max-h-48">
+                            {filteredDoctors.length > 0 ? (
+                              filteredDoctors.map((doctor) => (
+                                <div
+                                  key={doctor._id}
+                                  className="px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors flex items-center"
+                                  onClick={() => handleDoctorSelect(doctor)}
+                                >
+                                  <div className="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                                    <FaUserMd className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                                  </div>
+                                  <div className="ml-3">
+                                    <div className="text-sm font-medium text-gray-900 dark:text-white">Dr. {doctor.name}</div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                                      <FaGraduationCap className="mr-1" />
+                                      {doctor.specialization}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">
+                                No doctors found
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
                 {/* Appointment Date */}
